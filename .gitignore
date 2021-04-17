@@ -1,0 +1,6 @@
+*.rej
+*~
+*.orig
+*.[oa]
+st
+patches/*
