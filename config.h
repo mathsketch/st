@@ -5,7 +5,12 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "Liberation Mono:pixelsize=12:antialias=true:autohint=true";
+static char *font = "FiraCode Nerd Font:size=13:antialias=true:autohint=true";
+/* Spare fonts */
+static char *font2[] = {
+	"Noto Color Emoji:pixelsize=24:antialias=true:autohint=true",
+};
+
 static int borderpx = 2;
 
 /*
@@ -74,7 +79,7 @@ static unsigned int cursorthickness = 2;
 static int bellvolume = 0;
 
 /* default TERM value */
-char *termname = "st-256color";
+char *termname = "xterm-256color"; // default value: st-256color
 
 /*
  * spaces per tab
@@ -91,7 +96,7 @@ char *termname = "st-256color";
  *
  *	stty tabs
  */
-unsigned int tabspaces = 8;
+unsigned int tabspaces = 4;
 
 /* bg opacity */
 float alpha = 0.8;
@@ -99,31 +104,76 @@ float alpha = 0.8;
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
 	/* 8 normal colors */
-	"black",
-	"red3",
-	"green3",
-	"yellow3",
-	"blue2",
-	"magenta3",
-	"cyan3",
-	"gray90",
+	/* "#1d1f21",  // black */
+	/* "#cc6666",  // red */
+	/* "#b5bd68",  // green */
+	/* "#f0c674",  // yellow */
+	/* "#81a2be",  // blue */
+	/* "#b294bb",  // magenta */
+	/* "#8abeb7",  // cyan */
+	/* "#c5c8c6",  // gray */
 
-	/* 8 bright colors */
-	"gray50",
-	"red",
-	"green",
-	"yellow",
-	"#5c5cff",
-	"magenta",
-	"cyan",
-	"white",
+	/* /1* 8 bright colors *1/ */
+	/* "#666666",  // gray */
+	/* "#d53e53",  // red */
+	/* "#b9ca4a",  // green */
+	/* "#e7c547",  // yellow */
+	/* "#7aa6da",  // blue */
+	/* "#c397d8",  // magenta */
+	/* "#70c0b1",  // cyan */
+	/* "#eaeaea",  // white */
 
-	[255] = 0,
+	/* [255] = 0, */
 
-	/* more colors can be added after 255 to use with DefaultXX */
-	"#cccccc",
-	"#555555",
-	"black",
+	/* /1* more colors can be added after 255 to use with DefaultXX *1/ */
+	/* "#cccccc", */
+	/* "#555555", */
+
+    /* 8 normal colors */
+    /* [0] = "#3b4252", /1* black   *1/ */
+    /* [1] = "#bf616a", /1* red     *1/ */
+    /* [2] = "#a3be8c", /1* green   *1/ */
+    /* [3] = "#ebcb8b", /1* yellow  *1/ */
+    /* [4] = "#81a1c1", /1* blue    *1/ */
+    /* [5] = "#b48ead", /1* magenta *1/ */
+    /* [6] = "#88c0d0", /1* cyan    *1/ */
+    /* [7] = "#e5e9f0", /1* white   *1/ */
+
+    /* /1* 8 bright colors *1/ */
+    /* [8]  = "#4c566a", /1* black   *1/ */
+    /* [9]  = "#bf616a", /1* red     *1/ */
+    /* [10] = "#a3be8c", /1* green   *1/ */
+    /* [11] = "#ebcb8b", /1* yellow  *1/ */
+    /* [12] = "#81a1c1", /1* blue    *1/ */
+    /* [13] = "#b48ead", /1* magenta *1/ */
+    /* [14] = "#8fbcbb", /1* cyan    *1/ */
+    /* [15] = "#eceff4", /1* white   *1/ */
+
+    /* [255] = 0, */
+
+    /* /1* special colors *1/ */
+    /* [256] = "#d8dee9", /1* foreground *1/ */
+    /* [257] = "#2e3440", /1* background *1/ */
+
+    /* 8 normal colors */
+    [0] = "#1d2021", /* hard contrast: #1d2021 / soft contrast: #32302f */
+    [1] = "#ea6962", /* red     */
+    [2] = "#a9b665", /* green   */
+    [3] = "#d8a657", /* yellow  */
+    [4] = "#7daea3", /* blue    */
+    [5] = "#d3869b", /* magenta */
+    [6] = "#89b482", /* cyan    */
+    [7] = "#d4be98", /* white   */
+  
+    /* 8 bright colors */
+    [8]  = "#928374", /* black   */
+    [9]  = "#ef938e", /* red     */
+    [10] = "#bbc585", /* green   */
+    [11] = "#e1bb7e", /* yellow  */
+    [12] = "#9dc2ba", /* blue    */
+    [13] = "#e1acbb", /* magenta */
+    [14] = "#a7c7a2", /* cyan    */
+    [15] = "#e2d3ba", /* white   */
 };
 
 
@@ -131,19 +181,26 @@ static const char *colorname[] = {
  * Default colors (colorname index)
  * foreground, background, cursor, reverse cursor
  */
-unsigned int defaultfg = 7;
-unsigned int defaultbg = 258;
-static unsigned int defaultcs = 256;
+unsigned int defaultfg = 15;
+unsigned int defaultbg = 0;
+static unsigned int defaultcs = 15;
 static unsigned int defaultrcs = 257;
 
 /*
- * Default shape of cursor
- * 2: Block ("█")
- * 4: Underline ("_")
- * 6: Bar ("|")
- * 7: Snowman ("☃")
+ * https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h4-Functions-using-CSI-_-ordered-by-the-final-character-lparen-s-rparen:CSI-Ps-SP-q.1D81
+ * Default style of cursor
+ * 0: Blinking block
+ * 1: Blinking block (default)
+ * 2: Steady block ("█")
+ * 3: Blinking underline
+ * 4: Steady underline ("_")
+ * 5: Blinking bar
+ * 6: Steady bar ("|")
+ * 7: Blinking st cursor
+ * 8: Steady st cursor
  */
-static unsigned int cursorshape = 2;
+static unsigned int cursorstyle = 1;
+static Rune stcursor = 0x2603; /* snowman (U+2603) */
 
 /*
  * Default columns and rows numbers
@@ -153,11 +210,10 @@ static unsigned int cols = 80;
 static unsigned int rows = 24;
 
 /*
- * Default colour and shape of the mouse cursor
+ * Default shape of the mouse cursor
  */
-static unsigned int mouseshape = XC_xterm;
-static unsigned int mousefg = 7;
-static unsigned int mousebg = 0;
+
+static char* mouseshape = "xterm";
 
 /*
  * Color used to display font attributes when fontconfig selected a font which
@@ -178,6 +234,8 @@ static uint forcemousemod = ShiftMask;
  */
 static MouseShortcut mshortcuts[] = {
 	/* mask                 button   function        argument       release */
+	{ XK_ANY_MOD,           Button4, kscrollup,      {.i = 3},      0, /* !alt */ -1 },
+	{ XK_ANY_MOD,           Button5, kscrolldown,    {.i = 3},      0, /* !alt */ -1 },
 	{ XK_ANY_MOD,           Button2, selpaste,       {.i = 0},      1 },
 	{ ShiftMask,            Button4, ttysend,        {.s = "\033[5;2~"} },
 	{ XK_ANY_MOD,           Button4, ttysend,        {.s = "\031"} },
@@ -195,14 +253,16 @@ static Shortcut shortcuts[] = {
 	{ ControlMask,          XK_Print,       toggleprinter,  {.i =  0} },
 	{ ShiftMask,            XK_Print,       printscreen,    {.i =  0} },
 	{ XK_ANY_MOD,           XK_Print,       printsel,       {.i =  0} },
-	{ TERMMOD,              XK_Prior,       zoom,           {.f = +1} },
-	{ TERMMOD,              XK_Next,        zoom,           {.f = -1} },
-	{ TERMMOD,              XK_Home,        zoomreset,      {.f =  0} },
+	{ ControlMask,          XK_equal,       zoom,           {.f = +1} },
+	{ ControlMask,          XK_minus,       zoom,           {.f = -1} },
+	{ ControlMask,          XK_0,           zoomreset,      {.f =  0} },
 	{ TERMMOD,              XK_C,           clipcopy,       {.i =  0} },
 	{ TERMMOD,              XK_V,           clippaste,      {.i =  0} },
-	{ TERMMOD,              XK_Y,           selpaste,       {.i =  0} },
-	{ ShiftMask,            XK_Insert,      selpaste,       {.i =  0} },
+	/* { TERMMOD,              XK_Y,           selpaste,       {.i =  0} }, */
+	/* { ShiftMask,            XK_Insert,      selpaste,       {.i =  0} }, */
 	{ TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
+	{ ShiftMask,            XK_Page_Up,     kscrollup,      {.i = -1} },
+	{ ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = -1} },
 };
 
 /*
