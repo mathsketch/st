@@ -8,10 +8,10 @@
 static char *font = "MesloLGS Nerd Font:pixelsize=20:antialias=true:autohint=true";
 /* Spare fonts */
 static char *font2[] = {
-    "JoyPixels:pixelsize=16:antialias=true:autohint=true",
+    "Noto Color Emoji:pixelsize=16:antialias=true:autohint=true",
 };
 
-static int borderpx = 2;
+static int borderpx = 0;
 
 /*
  * What program is execed by st depends of these precedence rules:
@@ -79,7 +79,7 @@ static unsigned int cursorthickness = 2;
  * 0: disable (render all U25XX glyphs normally from the font).
  */
 const int boxdraw = 1;
-const int boxdraw_bold = 1;
+const int boxdraw_bold = 0;
 
 /* braille (U28XX):  1: render as adjacent "pixels",  0: use font */
 const int boxdraw_braille = 0;
@@ -116,76 +116,31 @@ float alpha = 0.8;
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
     /* 8 normal colors */
-    /* "#1d1f21",  // black */
-    /* "#cc6666",  // red */
-    /* "#b5bd68",  // green */
-    /* "#f0c674",  // yellow */
-    /* "#81a2be",  // blue */
-    /* "#b294bb",  // magenta */
-    /* "#8abeb7",  // cyan */
-    /* "#c5c8c6",  // gray */
+    [0] = "#3b4252", /* black   */
+    [1] = "#bf616a", /* red     */
+    [2] = "#a3be8c", /* green   */
+    [3] = "#ebcb8b", /* yellow  */
+    [4] = "#81a1c1", /* blue    */
+    [5] = "#b48ead", /* magenta */
+    [6] = "#88c0d0", /* cyan    */
+    [7] = "#e5e9f0", /* white   */
 
-    /* /1* 8 bright colors *1/ */
-    /* "#666666",  // gray */
-    /* "#d53e53",  // red */
-    /* "#b9ca4a",  // green */
-    /* "#e7c547",  // yellow */
-    /* "#7aa6da",  // blue */
-    /* "#c397d8",  // magenta */
-    /* "#70c0b1",  // cyan */
-    /* "#eaeaea",  // white */
-
-    /* [255] = 0, */
-
-    /* /1* more colors can be added after 255 to use with DefaultXX *1/ */
-    /* "#cccccc", */
-    /* "#555555", */
-
-    /* 8 normal colors */
-    /* [0] = "#3b4252", /1* black   *1/ */
-    /* [1] = "#bf616a", /1* red     *1/ */
-    /* [2] = "#a3be8c", /1* green   *1/ */
-    /* [3] = "#ebcb8b", /1* yellow  *1/ */
-    /* [4] = "#81a1c1", /1* blue    *1/ */
-    /* [5] = "#b48ead", /1* magenta *1/ */
-    /* [6] = "#88c0d0", /1* cyan    *1/ */
-    /* [7] = "#e5e9f0", /1* white   *1/ */
-
-    /* /1* 8 bright colors *1/ */
-    /* [8]  = "#4c566a", /1* black   *1/ */
-    /* [9]  = "#bf616a", /1* red     *1/ */
-    /* [10] = "#a3be8c", /1* green   *1/ */
-    /* [11] = "#ebcb8b", /1* yellow  *1/ */
-    /* [12] = "#81a1c1", /1* blue    *1/ */
-    /* [13] = "#b48ead", /1* magenta *1/ */
-    /* [14] = "#8fbcbb", /1* cyan    *1/ */
-    /* [15] = "#eceff4", /1* white   *1/ */
-
-    /* [255] = 0, */
-
-    /* /1* special colors *1/ */
-    /* [256] = "#d8dee9", /1* foreground *1/ */
-    /* [257] = "#2e3440", /1* background *1/ */
-
-    /* 8 normal colors */
-    [0] = "#1d2021", /* hard contrast: #1d2021 / soft contrast: #32302f */
-    [1] = "#ea6962", /* red     */
-    [2] = "#a9b665", /* green   */
-    [3] = "#d8a657", /* yellow  */
-    [4] = "#7daea3", /* blue    */
-    [5] = "#d3869b", /* magenta */
-    [6] = "#89b482", /* cyan    */
-    [7] = "#d4be98", /* white   */
-  
     /* 8 bright colors */
-    [8]  = "#928374", /* black   */
-    [9]  = "#ef938e", /* red     */
-    [10] = "#bbc585", /* green   */
-    [11] = "#e1bb7e", /* yellow  */
-    [12] = "#9dc2ba", /* blue    */
-    [13] = "#e1acbb", /* magenta */
-    [14] = "#a7c7a2", /* cyan    */
-    [15] = "#e2d3ba", /* white   */
+    [8]  = "#4c566a", /* black   */
+    [9]  = "#bf616a", /* red     */
+    [10] = "#a3be8c", /* green   */
+    [11] = "#ebcb8b", /* yellow  */
+    [12] = "#81a1c1", /* blue    */
+    [13] = "#b48ead", /* magenta */
+    [14] = "#8fbcbb", /* cyan    */
+    [15] = "#eceff4", /* white   */
+
+    [255] = 0,
+
+    /* special colors */
+    [256] = "#d8dee9", /* background */
+    [257] = "#1d2021", /* foreground */
+    [258] = "#1d2021", /* curosr */
 };
 
 
@@ -193,9 +148,9 @@ static const char *colorname[] = {
  * Default colors (colorname index)
  * foreground, background, cursor, reverse cursor
  */
-unsigned int defaultfg = 15;
-unsigned int defaultbg = 0;
-static unsigned int defaultcs = 15;
+unsigned int defaultfg = 257;
+unsigned int defaultbg = 256;
+static unsigned int defaultcs = 258;
 static unsigned int defaultrcs = 257;
 
 /*
@@ -241,6 +196,41 @@ static unsigned int defaultattr = 11;
 static uint forcemousemod = ShiftMask;
 
 /*
+ * Xresources preferences to load at startup
+ */
+ResourcePref resources[] = {
+        { "font",         STRING,  &font           },
+        { "color0",       STRING,  &colorname[0]   },
+        { "color1",       STRING,  &colorname[1]   },
+        { "color2",       STRING,  &colorname[2]   },
+        { "color3",       STRING,  &colorname[3]   },
+        { "color4",       STRING,  &colorname[4]   },
+        { "color5",       STRING,  &colorname[5]   },
+        { "color6",       STRING,  &colorname[6]   },
+        { "color7",       STRING,  &colorname[7]   },
+        { "color8",       STRING,  &colorname[8]   },
+        { "color9",       STRING,  &colorname[9]   },
+        { "color10",      STRING,  &colorname[10]  },
+        { "color11",      STRING,  &colorname[11]  },
+        { "color12",      STRING,  &colorname[12]  },
+        { "color13",      STRING,  &colorname[13]  },
+        { "color14",      STRING,  &colorname[14]  },
+        { "color15",      STRING,  &colorname[15]  },
+        { "background",   STRING,  &colorname[256] },
+        { "foreground",   STRING,  &colorname[257] },
+        { "cursorColor",  STRING,  &colorname[258] },
+        { "termname",     STRING,  &termname       },
+        { "shell",        STRING,  &shell          },
+        { "blinktimeout", INTEGER, &blinktimeout   },
+        { "bellvolume",   INTEGER, &bellvolume     },
+        { "tabspaces",    INTEGER, &tabspaces      },
+        { "borderpx",     INTEGER, &borderpx       },
+        { "cwscale",      FLOAT,   &cwscale        },
+        { "chscale",      FLOAT,   &chscale        },
+        { "alpha",        FLOAT,   &alpha          },
+} ;
+
+/*
  * Internal mouse shortcuts.
  * Beware that overloading Button1 will disable the selection.
  */
@@ -282,6 +272,8 @@ static Shortcut shortcuts[] = {
     { TERMMOD,              XK_Num_Lock,    numlock,        {.i =  0} },
     { ShiftMask,            XK_Page_Up,     kscrollup,      {.i = -1} },
     { ShiftMask,            XK_Page_Down,   kscrolldown,    {.i = -1} },
+    { XK_ANY_MOD,           XK_Page_Up,     kscrollup,      {.i = 4} },
+    { XK_ANY_MOD,           XK_Page_Down,   kscrolldown,    {.i = 4} },
 };
 
 /*
