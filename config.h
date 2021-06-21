@@ -5,7 +5,7 @@
  *
  * font: see http://freedesktop.org/software/fontconfig/fontconfig-user.html
  */
-static char *font = "MesloLGS Nerd Font:pixelsize=20:antialias=true:autohint=true";
+static char *font = "FiraCode Nerd Font:pixelsize=19:antialias=true:autohint=true";
 /* Spare fonts */
 static char *font2[] = {
     "Noto Color Emoji:pixelsize=16:antialias=true:autohint=true",
@@ -50,7 +50,7 @@ int allowaltscreen = 1;
 
 /* allow certain non-interactive (insecure) window operations such as:
    setting the clipboard text */
-int allowwindowops = 0;
+int allowwindowops = 1;
 
 /*
  * draw latency range in ms - from new content/keypress/etc until drawing.
@@ -91,7 +91,7 @@ const int boxdraw_braille = 0;
 static int bellvolume = 0;
 
 /* default TERM value */
-char *termname = "xterm-256color"; // default value: st-256color
+char *termname = "st-256color"; // default value: st-256color
 
 /*
  * spaces per tab
@@ -148,8 +148,8 @@ static const char *colorname[] = {
  * Default colors (colorname index)
  * foreground, background, cursor, reverse cursor
  */
-unsigned int defaultfg = 257;
 unsigned int defaultbg = 256;
+unsigned int defaultfg = 257;
 static unsigned int defaultcs = 258;
 static unsigned int defaultrcs = 257;
 
@@ -252,7 +252,7 @@ static MouseShortcut mshortcuts[] = {
 static char *openurlcmd[] = { "/bin/sh", "-c",
     "st-urlhander -o", "externalpipe", NULL };
 static char *testcmd[] = { "/bin/sh", "-c",
-    "printenv", "externalpipe", NULL };
+    "cat > $HOME/tmp; echo 1 >> $HOME/tmp", "externalpipe", NULL };
 
 static Shortcut shortcuts[] = {
     /* mask                 keysym          function        argument */
