@@ -124,6 +124,7 @@ typedef struct {
 	XSetWindowAttributes attrs;
 	int scr;
 	int isfixed; /* is fixed geometry? */
+	int isfreeAdj; /* is free adjust geometry? */
 	int depth; /* bit depth */
 	int l, t; /* left and top offset */
 	int gm; /* geometry mask */
@@ -1273,8 +1274,13 @@ xinit(int cols, int rows)
 	xloadcols();
 
 	/* adjust fixed window geometry */
-	win.w = 2 * win.hborderpx + 2 * borderpx + cols * win.cw;
-	win.h = 2 * win.vborderpx + 2 * borderpx + rows * win.ch;
+    if (xw.isfreeAdj) {
+        win.w = 2 * win.hborderpx + 2 * borderpx + cols;
+        win.h = 2 * win.vborderpx + 2 * borderpx + rows;
+    } else {
+        win.w = 2 * win.hborderpx + 2 * borderpx + cols * win.cw;
+        win.h = 2 * win.vborderpx + 2 * borderpx + rows * win.ch;
+    }
 	if (xw.gm & XNegative)
 		xw.l += DisplayWidth(xw.dpy, xw.scr) - win.w - 2;
 	if (xw.gm & YNegative)
@@ -2227,6 +2233,7 @@ main(int argc, char *argv[])
 {
 	xw.l = xw.t = 0;
 	xw.isfixed = False;
+	xw.isfreeAdj = False;
 	xsetcursor(cursorstyle);
 
 	ARGBEGIN {
@@ -2249,9 +2256,10 @@ main(int argc, char *argv[])
 	case 'g':
 		xw.gm = XParseGeometry(EARGF(usage()),
 				&xw.l, &xw.t, &cols, &rows);
+	    xw.isfreeAdj = True;
 		break;
 	case 'i':
-		xw.isfixed = 1;
+		xw.isfixed = True;
 		break;
 	case 'o':
 		opt_io = EARGF(usage());
