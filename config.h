@@ -141,17 +141,24 @@ static const char *colorname[] = {
     [256] = "#d8dee9", /* background */
     [257] = "#1d2021", /* foreground */
     [258] = "#1d2021", /* curosr */
+    [259] = "#928374"
 };
 
 
 /*
  * Default colors (colorname index)
- * foreground, background, cursor, reverse cursor
+ * foreground, background, cursor, reverse cursor, selection
  */
 unsigned int defaultbg = 256;
 unsigned int defaultfg = 257;
 unsigned int defaultcs = 258;
 static unsigned int defaultrcs = 257;
+unsigned int selectionbg = 259;
+unsigned int selectionfg = 3;
+/* If 0 use selectionfg as foreground in order to have a uniform foreground-color */
+/* Else if 1 keep original foreground-color of each cell => more colors :) */
+static int ignoreselfg = 1;
+
 
 /*
  * https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h4-Functions-using-CSI-_-ordered-by-the-final-character-lparen-s-rparen:CSI-Ps-SP-q.1D81
@@ -219,6 +226,7 @@ ResourcePref resources[] = {
         { "background",   STRING,  &colorname[256] },
         { "foreground",   STRING,  &colorname[257] },
         { "cursorColor",  STRING,  &colorname[258] },
+        { "selectionbg",  STRING,  &colorname[259] },
         { "termname",     STRING,  &termname       },
         { "shell",        STRING,  &shell          },
         { "blinktimeout", INTEGER, &blinktimeout   },
