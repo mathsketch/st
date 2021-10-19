@@ -1615,15 +1615,15 @@ xdrawglyphfontspecs(const XftGlyphFontSpec *specs, Glyph base, int len, int x, i
 		if (winy + win.ch >= win.vborderpx + win.th)
 			xclear(winx, winy + win.ch, winx + width, win.h);
 
-	/* Set the clip region because Xft is sometimes dirty. */
-	r.x = 0;
-	r.y = 0;
-	r.height = win.ch;
-	r.width = width;
-	XftDrawSetClipRectangles(xw.draw, winx, winy, &r, 1);
+	  /* Set the clip region because Xft is sometimes dirty. */
+	  r.x = 0;
+	  r.y = 0;
+	  r.height = win.ch;
+	  r.width = width;
+	  XftDrawSetClipRectangles(xw.draw, winx, winy, &r, 1);
 
-	/* Fill the background */
-	XftDrawRect(xw.draw, bg, winx, winy, width, win.ch);
+	  /* Fill the background */
+	  XftDrawRect(xw.draw, bg, winx, winy, width, win.ch);
 	}
 
 	if (dmode & DRAW_FG) {
@@ -1814,7 +1814,7 @@ xdrawline(Line line, int x1, int y1, int x2)
 			if (new.mode == ATTR_WDUMMY)
 				continue;
 			if (selected(x, y1))
-				new.mode ^= ATTR_REVERSE;
+				new.mode |= ATTR_SELECTED;
 			if (i > 0 && ATTRCMP(base, new)) {
 				xdrawglyphfontspecs(specs, base, i, ox, y1, dmode);
 				specs += i;
